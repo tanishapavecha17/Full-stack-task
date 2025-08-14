@@ -6,6 +6,14 @@ const validateObjectId = (id, errorMessage = 'Invalid ID format') => {
   }
 };
 
+const articleIdSchema = Joi.object({
+  id: Joi.string().hex().length(24).required().messages({
+    'string.hex': 'ID must be a valid hexadecimal string',
+    'string.length': 'ID must be exactly 24 characters long',
+    'any.required': 'Article ID is required'
+  })
+});
+
 const createArticleSchema = Joi.object({
   title: Joi.string()
     .label('title')
