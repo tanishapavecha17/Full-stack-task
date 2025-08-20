@@ -38,25 +38,22 @@ const upload = multer({
   fileFilter: fileFilter
 });
 
+
+
 const uploadProfileImageMiddleware = (req, res, next) => {
-  const processUpload = upload.single('profileImage'); 
+  const processUpload = upload.single('image');
 
   processUpload(req, res, (err) => {
     if (err instanceof multer.MulterError) {
-      
       if (err.code === 'LIMIT_FILE_SIZE') {
         return res.status(400).json({ success: false, message: 'File is too large. Max size is 5MB.' });
       }
       return res.status(400).json({ success: false, message: err.message });
     } else if (err) {
-      
       return res.status(400).json({ success: false, message: err.message });
     }
-   
-    if (!req.file) {
-        return res.status(400).json({ success: false, message: 'No image file provided.' });
-    }
-
+    
+    
     next();
   });
 };

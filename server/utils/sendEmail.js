@@ -5,7 +5,7 @@ require("dotenv").config();
 
 const sendPasswordEmail = async (to, firstName, token) => {
   // 1. Build the dynamic link and HTML content *inside* the function
-  const setPasswordLink = `${process.env.CLIENT_URL}/api/set-password/${token}`;
+  const setPasswordLink = `${process.env.CLIENT_URL}/setpassword/${token}`;
   
   const emailContent = `
     <h3>Hello ${firstName},</h3>

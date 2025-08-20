@@ -35,17 +35,19 @@ const getMyProfile = async (req, res) => {
   }
 };
 
+
+
 const updateMyProfile = async (req, res) => {
   try {
-    const { error, value } = updateProfileSchema.validate(req.body);
-    if (error) {
-      return res
-        .status(400)
-        .json({ success: false, message: error.details[0].message });
-    }
+    
+    const updateData = req.body;
+    const imageFile = req.file;
 
-    const updatedUser = await userService.updateMyProfilee(req.user.id, value);
-    console.log(updatedUser);
+    const updatedUser = await userService.updateMyProfilee(
+      req.user.id,
+      updateData,
+      imageFile
+    );
 
     res.status(200).json({
       success: true,
@@ -54,12 +56,9 @@ const updateMyProfile = async (req, res) => {
     });
   } catch (error) {
     console.error("Update profile failed:", error);
-    if (error.message.includes("Invalid update")) {
-      return res.status(400).json({ success: false, message: error.message });
-    }
     res.status(500).json({
       success: false,
-      message: "Failed to update profile due to a server error.",
+      message: error.message || "Failed to update profile due to a server error.",
     });
   }
 };

@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const validateToken = require('../middlewares/validatetoken');
-const { getAllPublishedArticlesController, getArticleByIdController, createArticleController, getMyArticlesController, updateArticleController, deleteArticleController, getPublishedByAuthorController, getDraftArticlesOfUserController } = require("../controllers/articles/articleController");
+const { getAllPublishedArticlesController, getArticleByIdController, createArticleController, getMyArticlesController, updateArticleController, deleteArticleController, getPublishedByAuthorController, getDraftArticlesOfUserController, getArticlesController, searchByTitleController, searchByTermController } = require("../controllers/articles/articleController");
 const validateAdmin = require("../middlewares/validatetokenadmin");
 const upload = require("../middlewares/uploadArticleImage");
 
@@ -11,7 +11,7 @@ const upload = require("../middlewares/uploadArticleImage");
 router.get('/all-articles', validateToken,getAllPublishedArticlesController);
 
 // GET - Get a single article by its ID
-router.get('/:id',validateToken,getArticleByIdController);
+router.get('/id/:id',validateToken,getArticleByIdController);
 
 // Create a new article
 router.post('/new-article', validateToken, upload.single('coverImage'),createArticleController);
@@ -29,7 +29,13 @@ router.delete('/my-articles/delete/:id', validateToken, deleteArticleController)
 router.get('/all-articles/:authorId', validateToken, getPublishedByAuthorController);
 
 //get- draft articles of user
-router.get('/me/my-drafts', validateToken, getDraftArticlesOfUserController);
+router.get('/me/my-drafts', validateToken, getDraftArticlesOfUserController)
+
+//common for (getbyid getbytitle )
+router.get('/', validateToken, getArticlesController);
+
+router.get('/search/:term', validateToken, searchByTermController);
+
 
 
 module.exports = router;

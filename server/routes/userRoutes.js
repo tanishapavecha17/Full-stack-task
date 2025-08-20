@@ -28,7 +28,7 @@ router.post("/resetpassword/:token", validateSetPassword, resetpassword);
 
 // User profile routes
 router.get('/me', validateToken, getMyProfile);
-router.put('/me/edit', validateToken, updateMyProfile);
+router.put('/me/edit', validateToken,uploadProfileImageMiddleware, updateMyProfile);
 router.put('/me/profile-image', validateToken, uploadProfileImageMiddleware,updateProfileImageController);
 router.delete('/me/profile-image', validateToken, deleteProfileImage);
 

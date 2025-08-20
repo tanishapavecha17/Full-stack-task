@@ -115,7 +115,6 @@ const getDeletedUsers = async (page = 1, limit = 10) => {
 
 const updateUserProfile = async (userId, updateData) => {
   try {
-    // Prevent password update
     if ("password" in updateData ) {
       throw new Error("You cannot update password or email from this route");
     }
@@ -141,27 +140,47 @@ const updateUserProfile = async (userId, updateData) => {
   }
 };
 
-const updateMyProfilee = async (userId, updateData) => {
-  const allowedUpdates = ['first_name', 'last_name', 'email'];
-  const requestedUpdates = Object.keys(updateData);
-  const isValidOperation = requestedUpdates.every(update => allowedUpdates.includes(update));
 
-  if (!isValidOperation) {
-    throw new Error('Invalid update! You can only update first_name, last_name, and email.');
-  }
-
-
-  const user = await User.findByIdAndUpdate(userId, updateData, {
-    new: true,
-    runValidators: true 
-  }).select('-password');
-
+const updateMyProfilee = async (userId, updateData, imageFile) => {
+ 
+  const user = await User.findById(userId);
   if (!user) {
+    if (imageFile) {
+      fs.unlinkSync(imageFile.path);
+    }
     throw new Error('User not found.');
   }
 
-  return user; 
-}
+  if (imageFile) {
+   
+    if (user.image) {
+      const oldImagePath = path.join(__dirname, '..', 'public', user.image);
+      if (fs.existsSync(oldImagePath)) {
+        fs.unlinkSync(oldImagePath);
+      }
+    }
+    
+    const relativeImagePath = path.join('public','uploads', 'profiles', imageFile.filename).replace(/\\/g, "/");
+    user.image = relativeImagePath;
+  }
+
+  
+  const allowedUpdates = ['first_name', 'last_name', 'email'];
+  Object.keys(updateData).forEach((key) => {
+    if (allowedUpdates.includes(key)) {
+      user[key] = updateData[key];
+    }
+  });
+
+
+  const updatedUser = await user.save();
+
+
+  const userObject = updatedUser.toObject();
+  delete userObject.password;
+  return userObject;
+};
+
 
 const setUserPassword = async (token, password) => {
   let decoded;

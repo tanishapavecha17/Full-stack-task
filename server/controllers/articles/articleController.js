@@ -6,6 +6,10 @@ const {
   deleteArticle,
   createArticle,
   getDraftArticle,
+  searchByAuthor,
+  searchArticles,
+  getArticles,
+  searchByTerm,
 } = require("../../services/articleService");
 
 const {
@@ -54,8 +58,16 @@ const getMyArticlesController = async (req, res) => {
   }
 };
 
+
 const createArticleController = async (req, res) => {
   try {
+    if (!req.file) {
+      return res.status(400).json({
+        success: false,
+        message: "Validation failed.",
+        errors: ["coverImage is required"],
+      });
+    }
     const { error, value } = createArticleSchema.validate(req.body, {
       abortEarly: false,
     });
@@ -67,13 +79,8 @@ const createArticleController = async (req, res) => {
         errors: error.details.map((err) => err.message),
       });
     }
-    if (!req.file) {
-      return res.status(400).json({
-        success: false,
-        message: "Validation failed.",
-        errors: ["coverImage is required"],
-      });
-    }
+    
+    
     console.log(value);
 
     const articleData = {
@@ -148,6 +155,58 @@ const getArticleByIdController = async (req, res) => {
     });
   }
 };
+
+const searchByTitleController = async (req, res) => {
+  try {
+    const { q: title } = req.query;
+    
+
+    if (!title) {
+      return res.status(400).json({ success: false, message: 'A search term (q) is required.' });
+    }
+
+    const { articles, pagination } = await searchArticles(title);
+
+    res.status(200).json({
+      success: true,
+      count: articles.length,
+      pagination,
+      data: articles,
+    });
+  } catch (error) {
+    console.error("SEARCH ARTICLES FAILED:", error);
+    res.status(500).json({
+      success: false,
+      message: "Failed to search articles due to a server error",
+    });
+  }
+};
+
+const searchByAuthorController = async (req, res) => {
+  try {
+    const { name } = req.query;
+
+    if (!name) {
+      return res.status(400).json({ success: false, message: 'An author name is required.' });
+    }
+
+    const { articles, pagination } = await searchByAuthor(name);
+
+    res.status(200).json({
+      success: true,
+      count: articles.length,
+      pagination,
+      data: articles,
+    });
+  } catch (error) {
+    console.error("SEARCH BY AUTHOR FAILED:", error);
+    res.status(500).json({
+      success: false,
+      message: "Failed to search articles due to a server error",
+    });
+  }
+};
+
 
 const updateArticleController = async (req, res) => {
   try {
@@ -280,6 +339,40 @@ const getDraftArticlesOfUserController = async(req,res) => {
 
 }
 };
+const getArticlesController = async (req, res) => {
+  try {
+    const result = await getArticles(req.user, req.query); 
+    res.status(200).json({ success: true, ...result });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+const searchByTermController = async (req, res) => {
+  try {
+    const { term } = req.params; // Get the search term from the URL path
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+
+    if (!term || term.trim() === "") {
+      return res.status(400).json({ success: false, message: 'A search term is required.' });
+    }
+
+    const { articles, pagination } = await searchByTerm(term, page, limit);
+
+    res.status(200).json({
+      success: true,
+      count: articles.length,
+      pagination,
+      data: articles,
+    });
+  } catch (error) {
+    console.error("SEARCH BY TERM FAILED:", error);
+    res.status(500).json({
+      success: false,
+      message: "Failed to search for articles due to a server error",
+    });
+  }
+};
 
 module.exports = {
   getPublishedByAuthorController,
@@ -289,5 +382,9 @@ module.exports = {
   getArticleByIdController,
   updateArticleController,
   deleteArticleController,
-  getDraftArticlesOfUserController
+  getDraftArticlesOfUserController,
+  searchByAuthorController,
+  searchByTitleController,
+  getArticlesController,
+  searchByTermController
 };
