@@ -1,0 +1,40 @@
+/* DraftArticleCard.css */
+
+.card-image-container {
+  position: relative; /* This is the container for the image and the overlay buttons */
+}
+
+.card-actions {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 2;
+  display: flex;
+  gap: 8px;
+
+}
+
+
+.action-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  color: white;
+  background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+  transition: background-color 0.2s, transform 0.2s;
+}
+
+.action-btn:hover {
+  transform: scale(1.1);
+  background-color: rgba(0, 0, 0, 0.7);
+}
+
+.action-btn svg {
+  width: 18px;
+  height: 18px;
+}

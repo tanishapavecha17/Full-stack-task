@@ -1,0 +1,68 @@
+/* MyDrafts.css */
+.my-drafts-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.my-drafts-container h1 {
+  margin-bottom: 25px;
+  font-size: 2.2rem;
+  color: #282c34;
+}
+
+.drafts-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+}
+
+.draft-item-container {
+  display: flex;
+  flex-direction: column;
+}
+
+
+.draft-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.action-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px; 
+  height: 40px;
+  border: none;
+  border-radius: 50%; 
+  cursor: pointer;
+  color: white;
+  transition: background-color 0.2s, transform 0.2s;
+}
+
+.action-btn svg {
+  width: 20px;
+  height: 20px;
+}
+
+.action-btn:hover {
+  transform: scale(1.1);
+}
+
+.message {
+  text-align: center;
+  font-size: 1.2rem;
+  color: #666;
+  margin-top: 50px;
+}
+
+.message.error {
+  color: #e53e3e;
+}
+
+.create-article-btn{
+  float: right;
+  background-color: rgb(107, 221, 112);
+}

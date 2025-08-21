@@ -1,0 +1,30 @@
+/* Home.css */
+
+/* Style for the main content area when the sidebar is visible */
+.main-content-with-sidebar {
+  /* The margin-left value should be the same as the sidebar's width */
+  margin-left: 220px;
+  padding: 20px;
+}
+
+/* Style for the main content area when there is no sidebar */
+.main-content-full {
+  padding: 20px;
+}
+
+.home-content {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.home-content h1 {
+  margin-bottom: 20px;
+  font-size: 2rem;
+  color: #282c34;
+}
+
+.articles-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+}

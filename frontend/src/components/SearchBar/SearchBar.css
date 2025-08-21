@@ -1,0 +1,35 @@
+/* SearchBar.css */
+.search-bar-container {
+  position: relative; /* This is crucial for positioning the icon inside */
+  margin-bottom: 25px;
+  width: 100%;
+  max-width: 700px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.search-input {
+  width: 100%; /* Input takes the full width of the container */
+  padding: 16px 45px 16px 20px; /* Right padding makes space for the icon */
+  font-size: 1rem;
+  border: 1px solid #ddd;
+  border-radius: 50px; /* Fully rounded corners */
+  outline: none;
+  transition: border-color 0.2s;
+  box-sizing: border-box; /* Ensures padding is included in the width */
+}
+
+.search-input:focus {
+  border-color: rgba(97, 97, 97, 1);
+}
+
+.search-icon {
+  position: absolute;
+  right: 15px; /* Position icon on the right */
+  top: 50%;
+  transform: translateY(-50%); /* Center the icon vertically */
+  width: 24px;
+  height: 24px;
+  fill: #aaa; /* Icon color */
+  pointer-events: none; /* Makes the icon non-clickable */
+}

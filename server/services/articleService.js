@@ -1,9 +1,10 @@
 const mongoose = require("mongoose");
 const Article = require("../models/articleModel");
 const { validateObjectId } = require("../validation/articleValidations");
+const fs = require("fs");
 
 const getArticles = async (user, options = {}) => {
-  const { page = 1, limit = 10 } = options;
+  const { page = 1, limit = 9 } = options;
   const skip = (page - 1) * limit;
   const byActive = { isDeleted: { $ne: true } };
   const matchStage = byActive;
@@ -119,7 +120,7 @@ const getArticles = async (user, options = {}) => {
   return {
     articles,
     pagination: { page, limit, total, pages },
-  };ss
+  };
 };
 
 const getAllPublished = async () => {
@@ -141,6 +142,8 @@ const getArticleById = async (articleId) => {
 
 const createArticle = async (articleData) => {
   try {
+    console.log("trying to create an article");
+    
     const newArticle = await Article.create(articleData);
     return newArticle;
   } catch (error) {
@@ -150,7 +153,7 @@ const createArticle = async (articleData) => {
     throw new Error("Failed to create article");
   }
 };
-const searchByTerm = async (searchTerm, page = 1, limit = 10) => {
+const searchByTerm = async (searchTerm, page = 1, limit = 9) => {
   const skip = (page - 1) * limit;
 
   const searchRegex = { $regex: searchTerm, $options: 'i' };
@@ -280,6 +283,7 @@ const searchByTerm = async (searchTerm, page = 1, limit = 10) => {
 
 const updateArticle = async (articleId, user, updateData) => {
   try {
+       
     validateObjectId(articleId, "Invalid article ID format");
 
     const article = await Article.findById(articleId).byActive();
@@ -321,6 +325,8 @@ const updateArticle = async (articleId, user, updateData) => {
 
     return updatedArticle;
   } catch (error) {
+    console.error("DETAILED UPDATE ERROR:", error); 
+  
     if (
       error.message.includes("not found") ||
       error.message.includes("not authorized") ||

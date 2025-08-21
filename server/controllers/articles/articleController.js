@@ -6,8 +6,6 @@ const {
   deleteArticle,
   createArticle,
   getDraftArticle,
-  searchByAuthor,
-  searchArticles,
   getArticles,
   searchByTerm,
 } = require("../../services/articleService");
@@ -61,6 +59,9 @@ const getMyArticlesController = async (req, res) => {
 
 const createArticleController = async (req, res) => {
   try {
+   console.log("heyyyaaaa");
+   
+    
     if (!req.file) {
       return res.status(400).json({
         success: false,
@@ -88,7 +89,7 @@ const createArticleController = async (req, res) => {
       author: req.user.id,
       coverImage: req.file.path,
     };
-
+ console.log("Data being sent to service:", articleData);
     const newArticle = await createArticle(articleData);
 
     res.status(201).json({
@@ -341,7 +342,14 @@ const getDraftArticlesOfUserController = async(req,res) => {
 };
 const getArticlesController = async (req, res) => {
   try {
-    const result = await getArticles(req.user, req.query); 
+  
+    const options = {
+      page: parseInt(req.query.page) || 1,   
+      limit: parseInt(req.query.limit) || 9, 
+      status: req.query.status 
+    };
+    
+    const result = await getArticles(req.user, options);    
     res.status(200).json({ success: true, ...result });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
@@ -349,9 +357,9 @@ const getArticlesController = async (req, res) => {
 };
 const searchByTermController = async (req, res) => {
   try {
-    const { term } = req.params; // Get the search term from the URL path
+    const { term } = req.params; 
     const page = parseInt(req.query.page) || 1;
-    const limit = parseInt(req.query.limit) || 10;
+    const limit = parseInt(req.query.limit) || 9;
 
     if (!term || term.trim() === "") {
       return res.status(400).json({ success: false, message: 'A search term is required.' });
